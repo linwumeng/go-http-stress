@@ -1,0 +1,38 @@
+@startuml
+
+title "Stress"
+
+actor User
+boundary Emitter
+collections Requestor
+control RoundTripper
+participant chan
+participant HTTP
+participant done
+control Stats
+actor Timer
+
+User -> Emitter
+
+Emitter -> Requestor
+loop
+Requestor -> RoundTripper
+RoundTripper -> HTTP
+RoundTripper -> chan
+Requestor -> Emitter
+end
+
+Emitter -> Stats
+loop
+Timer -> Stats
+Stats -> chan
+Stats -> Stats
+alt
+Stats -> done
+end
+end
+
+Emitter -> chan
+
+done -\ Emitter
+@enduml
